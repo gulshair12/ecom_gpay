@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Confetti from "react-confetti";
-import Header from "../Components/Header";
 
 const Checkout = () => {
   const { total } = useParams();
@@ -23,7 +22,6 @@ const Checkout = () => {
 
   return (
     <>
-      <Header />
       <div className="flex flex-col items-center justify-center h-screen">
         {paymentSuccess ? (
           <>
