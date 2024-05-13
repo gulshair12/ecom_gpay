@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./LandingPage/LandingPage";
 import Welcome from "./Welcome/Welcome";
 import Checkout from "./Checkout/Checkout";

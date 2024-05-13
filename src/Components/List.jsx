@@ -52,7 +52,7 @@ const List = () => {
 
   const total = getTotalPrice() + serviceFee;
 
-  console.log("Total:", total);
+  // console.log("Total:", total);
 
   return (
     <section className="py-24 relative">
