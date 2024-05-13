@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./LandingPage/LandingPage";
 import Welcome from "./Welcome/Welcome";
 import Checkout from "./Checkout/Checkout";
+import Success from "./SuccesPage/Success";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,6 +18,10 @@ function App() {
     {
       path: "/checkout/:total",
       element: <Checkout />,
+    },
+    {
+      path: "/success",
+      element: <Success />,
     },
   ]);
   return <RouterProvider router={router} />;

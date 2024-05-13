@@ -10,10 +10,7 @@ const LandingPage = () => {
     const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
     console.log(credentialResponseDecoded);
 
-    sessionStorage.setItem(
-      "userdata",
-      JSON.stringify(credentialResponseDecoded)
-    );
+    localStorage.setItem("userdata", JSON.stringify(credentialResponseDecoded));
     navigate("/welcomePage");
   };
 
