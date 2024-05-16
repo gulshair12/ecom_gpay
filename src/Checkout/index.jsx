@@ -5,7 +5,7 @@ import Checkout from "./Checkout";
 import { useParams } from "react-router-dom";
 
 const stripePromise = loadStripe(
-  "pk_test_51MKJKIInZz5ALfquUTVINWfUcqf0G4NJn4fLehtMMG2ICbFJ9QPIHW6KCAAtwj49m7qulwjr4G0RpyTKpY3lcwNV00Vf6MfZBY"
+  "pk_test_51PH2dsKvSuAOYrcIrXNxqCVOCHU5NyayZYrvKU7nuIdjr9kMwCp0isRg1Yl0iU7rT61prQXbihPObrWpV2qYuGbi00zoyhtZBf"
 );
 
 const index = () => {
