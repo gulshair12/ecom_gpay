@@ -1,8 +1,11 @@
 {
-    "functions": {
-      "api/**/*.js": {
-        "runtime": "nodejs20.x"
-      }
-    }
-  }
+  "version": 0,
+  "name": "ecom_gpay",
+  "builds": [
+     { "src": "app.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+     { "src": "/(.*)", "dest": "/app.js" }
+  ]
+}
   
