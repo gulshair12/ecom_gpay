@@ -32,6 +32,7 @@ const Checkout = ({ total }) => {
       } else {
         console.log("PaymentMethod:", paymentMethod);
         setPaymentError(null);
+        // Send payment method to backend
         confirmPaymentWithBackend(paymentMethod, total);
       }
     } catch (error) {
@@ -42,6 +43,28 @@ const Checkout = ({ total }) => {
 
   const handleCardholderNameChange = (event) => {
     setCardHolderName(event.target.value);
+  };
+
+  const confirmPaymentWithBackend = async (paymentMethod, total) => {
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paymentMethodId: paymentMethod.id,
+          amount: total,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to complete payment");
+      }
+      // Redirect to success page or handle success state
+    } catch (error) {
+      console.error("Error confirming payment:", error);
+      setPaymentError("An error occurred. Please try again later.");
+    }
   };
 
   return (
