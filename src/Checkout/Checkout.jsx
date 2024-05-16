@@ -32,7 +32,7 @@ const Checkout = ({ total }) => {
       } else {
         console.log("PaymentMethod:", paymentMethod);
         setPaymentError(null);
-        
+        confirmPaymentWithBackend(paymentMethod, total);
       }
     } catch (error) {
       console.error(error);
