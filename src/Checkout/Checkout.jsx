@@ -1,63 +1,85 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Confetti from "react-confetti";
+import React, { useState } from "react";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const Checkout = () => {
-  const { total } = useParams();
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+const Checkout = ({ total }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [paymentError, setPaymentError] = useState(null);
+  const [cardHolderName, setCardHolderName] = useState("");
 
-  const handlePayment = () => {
-    setPaymentSuccess(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+
+    try {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+        billing_details: {
+          name: cardHolderName,
+        },
+      });
+
+      if (error) {
+        console.error(error);
+        setPaymentError(error.message);
+      } else {
+        console.log("PaymentMethod:", paymentMethod);
+        setPaymentError(null);
+        
+      }
+    } catch (error) {
+      console.error(error);
+      setPaymentError("An error occurred. Please try again later.");
+    }
   };
 
-  useEffect(() => {
-    if (paymentSuccess) {
-      const timer = setTimeout(() => {
-        setPaymentSuccess(false);
-      }, 30000); 
-
-      return () => clearTimeout(timer);
-    }
-  }, [paymentSuccess]);
+  const handleCardholderNameChange = (event) => {
+    setCardHolderName(event.target.value);
+  };
 
   return (
-    <>
-      <div className="flex flex-col items-center justify-center h-screen">
-        {paymentSuccess ? (
-          <>
-            <Confetti />
-            <h2 className="text-3xl sm:text-4xl font-semibold mb-6 sm:mb-8">
-              Congratulations!
-            </h2>
-            <p className="text-lg sm:text-xl mb-6 sm:mb-8">
-              Your payment of <span className="text-indigo-600">${total}</span>{" "}
-              was successful.
-            </p>
-          </>
-        ) : (
-          
-          <>
-            <h2 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8">
-              Checkout
-            </h2>
-            <p className="text-lg sm:text-xl mb-6 sm:mb-8">
-              Your Total is <span className="text-indigo-600">${total}</span>
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handlePayment}
-                className="rounded-full py-2 px-4 sm:py-3 sm:px-6 bg-indigo-600 text-white font-semibold text-lg hover:bg-indigo-700 transition-colors duration-300"
-              >
-               Pay with Google
-              </button>
-              <button className="rounded-full py-2 px-4 sm:py-3 sm:px-6 bg-gray-200 text-gray-800 font-semibold text-lg hover:bg-gray-300 transition-colors duration-300">
-                Cancel
-              </button>
-            </div>
-          </>
+    <div className="flex justify-center items-center h-screen">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md w-full p-4 bg-white rounded shadow"
+      >
+        <h2 className="text-xl font-semibold mb-4">Payment method</h2>
+        <div className="mb-4">
+          <label className="block mb-2" htmlFor="cardHolderName">
+            Cardholder's Name
+          </label>
+          <input
+            type="text"
+            id="cardHolderName"
+            className="w-full px-3 py-2 border rounded"
+            value={cardHolderName}
+            onChange={handleCardholderNameChange}
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2">Card details</label>
+          <CardElement className="w-full p-2 border rounded" />
+        </div>
+        {paymentError && (
+          <div className="text-red-500 mb-4">{paymentError}</div>
         )}
-      </div>
-    </>
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+          disabled={!stripe}
+        >
+          Pay ${total}
+        </button>
+      </form>
+    </div>
   );
 };
 
