@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = ({ total }) => {
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const [paymentError, setPaymentError] = useState(null);
@@ -32,7 +34,7 @@ const Checkout = ({ total }) => {
       } else {
         console.log("PaymentMethod:", paymentMethod);
         setPaymentError(null);
-        // Send payment method to backend
+
         confirmPaymentWithBackend(paymentMethod, total);
       }
     } catch (error) {
@@ -60,7 +62,8 @@ const Checkout = ({ total }) => {
       if (!response.ok) {
         throw new Error("Failed to complete payment");
       }
-      // Redirect to success page or handle success state
+
+      navigate("/success");
     } catch (error) {
       console.error("Error confirming payment:", error);
       setPaymentError("An error occurred. Please try again later.");
