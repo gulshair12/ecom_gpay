@@ -1,11 +1,12 @@
 {
-  "version": 0,
-  "name": "ecom_gpay",
-  "builds": [
-     { "src": "app.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-     { "src": "/(.*)", "dest": "/app.js" }
-  ]
+  "functions": {
+    "api/test.js": {
+      "memory": 3009,
+      "maxDuration": 30
+    },
+    "api/*.js": {
+      "memory": 3009,
+      "maxDuration": 30
+    }
+  }
 }
-  
