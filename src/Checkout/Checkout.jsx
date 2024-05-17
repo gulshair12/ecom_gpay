@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 
-const Checkout = ({ total }) => {
+const Checkout = ({ amount }) => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
@@ -102,7 +102,7 @@ const Checkout = ({ total }) => {
           className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
           disabled={!stripe}
         >
-          Pay ${total}
+          Pay ${amount}
         </button>
       </form>
     </div>

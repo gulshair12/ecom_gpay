@@ -16,7 +16,7 @@ function App() {
       element: <Welcome />,
     },
     {
-      path: "/checkout/:total",
+      path: "/checkout/:amount",
       element: <Checkout />,
     },
     {

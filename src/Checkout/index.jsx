@@ -9,11 +9,11 @@ const stripePromise = loadStripe(
 );
 
 const index = () => {
-  const { total } = useParams();
+  const { amount } = useParams();
 
   return (
     <Elements stripe={stripePromise}>
-      <Checkout total={total} />
+      <Checkout amount={amount} />
     </Elements>
   );
 };
