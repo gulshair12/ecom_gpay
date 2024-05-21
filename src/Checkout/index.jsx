@@ -39,6 +39,7 @@ export default function App() {
       <Checkout
         fetchClientSecret={fetchClientSecret}
         clientSecret={clientSecret}
+        amount={amount}
       />
     </Elements>
   );

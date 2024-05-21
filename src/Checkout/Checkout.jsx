@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 
-const Checkout = ({ fetchClientSecret, clientSecret }) => {
+const Checkout = ({ fetchClientSecret, clientSecret, amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -19,11 +19,12 @@ const Checkout = ({ fetchClientSecret, clientSecret }) => {
     const cardElement = elements.getElement(CardElement);
 
     try {
-      const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-        billing_details: { name: cardHolderName }
-      });
+      const { paymentMethod, error: paymentMethodError } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+          billing_details: { name: cardHolderName },
+        });
 
       if (paymentMethodError) {
         setPaymentError(paymentMethodError.message);
@@ -33,9 +34,12 @@ const Checkout = ({ fetchClientSecret, clientSecret }) => {
       await fetchClientSecret(paymentMethod.id);
 
       if (clientSecret) {
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: paymentMethod.id,
-        });
+        const { error, paymentIntent } = await stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: paymentMethod.id,
+          }
+        );
 
         if (error) {
           setPaymentError(error.message);
@@ -83,7 +87,7 @@ const Checkout = ({ fetchClientSecret, clientSecret }) => {
           className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
           disabled={!stripe}
         >
-          Pay
+          Pay $ {amount}
         </button>
       </form>
     </div>
