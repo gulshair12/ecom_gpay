@@ -29,7 +29,7 @@ const Checkout = ({ amount }) => {
       });
 
       if (error) {
-        console.error(error);
+        console.error("Stripe PaymentMethod Error:", error);
         setPaymentError(error.message);
       } else {
         console.log("PaymentMethod:", paymentMethod);
@@ -38,7 +38,7 @@ const Checkout = ({ amount }) => {
         confirmPaymentWithBackend(paymentMethod, amount);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Stripe Create PaymentMethod Error:", error);
       setPaymentError("An error occurred. Please try again later.");
     }
   };
@@ -61,7 +61,8 @@ const Checkout = ({ amount }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to complete payment");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to complete payment");
       }
 
       const result = await response.json();
@@ -73,7 +74,7 @@ const Checkout = ({ amount }) => {
       }
     } catch (error) {
       console.error("Error confirming payment:", error);
-      setPaymentError("An error occurred. Please try again later.");
+      setPaymentError(error.message || "An error occurred. Please try again later.");
     }
   };
 
