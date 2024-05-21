@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 
-const Checkout = ({
-  fetchClientSecret,
-  clientSecret,
-  amount,
-  setPaymentMethodId, // Added setPaymentMethodId prop
-}) => {
+const Checkout = ({ fetchClientSecret, clientSecret, amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -24,17 +19,14 @@ const Checkout = ({
     const cardElement = elements.getElement(CardElement);
 
     try {
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: cardHolderName,
-            },
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: cardHolderName,
           },
-        }
-      );
+        },
+      });
 
       if (error) {
         setPaymentError(error.message);
@@ -59,20 +51,18 @@ const Checkout = ({
     const cardElement = elements.getElement(CardElement);
 
     try {
-      const { paymentMethod, error: paymentMethodError } =
-        await stripe.createPaymentMethod({
-          type: "card",
-          card: cardElement,
-          billing_details: { name: cardHolderName },
-        });
+      const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+        billing_details: { name: cardHolderName },
+      });
 
       if (paymentMethodError) {
         setPaymentError(paymentMethodError.message);
         return;
       }
 
-      setPaymentMethodId(paymentMethod.id);
-      await fetchClientSecret();
+      await fetchClientSecret(paymentMethod.id);
     } catch (error) {
       console.error("Payment method creation error:", error);
       setPaymentError("An error occurred. Please try again later.");
@@ -81,10 +71,7 @@ const Checkout = ({
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-md w-full p-4 bg-white rounded shadow"
-      >
+      <form onSubmit={handleSubmit} className="max-w-md w-full p-4 bg-white rounded shadow">
         <h2 className="text-xl font-semibold mb-4">Payment method</h2>
         <div className="mb-4">
           <label className="block mb-2" htmlFor="cardHolderName">
@@ -103,9 +90,7 @@ const Checkout = ({
           <label className="block mb-2">Card details</label>
           <CardElement className="w-full p-2 border rounded" />
         </div>
-        {paymentError && (
-          <div className="text-red-500 mb-4">{paymentError}</div>
-        )}
+        {paymentError && <div className="text-red-500 mb-4">{paymentError}</div>}
         <button
           type="submit"
           className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"

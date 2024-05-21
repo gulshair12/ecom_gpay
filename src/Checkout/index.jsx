@@ -4,30 +4,26 @@ import { loadStripe } from "@stripe/stripe-js";
 import Checkout from "./Checkout";
 import { useParams } from "react-router-dom";
 
-const stripePromise = loadStripe(
-  "pk_test_51PH2dsKvSuAOYrcIrXNxqCVOCHU5NyayZYrvKU7nuIdjr9kMwCp0isRg1Yl0iU7rT61prQXbihPObrWpV2qYuGbi00zoyhtZBf"
-);
+const stripePromise = loadStripe("pk_test_51PH2dsKvSuAOYrcIrXNxqCVOCHU5NyayZYrvKU7nuIdjr9kMwCp0isRg1Yl0iU7rT61prQXbihPObrWpV2qYuGbi00zoyhtZBf");
 
 export default function App() {
-  const { amount } = useParams(); 
+  const { amount } = useParams();
+  
+
 
   const [clientSecret, setClientSecret] = useState("");
-  const [paymentMethodId, setPaymentMethodId] = useState(""); 
 
-  const fetchClientSecret = async () => {
+  const fetchClientSecret = async (paymentMethodId) => {
     try {
-      const response = await fetch(
-        "https://stripe-createex.azurewebsites.net/payment-intent",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: amount, 
-            currency: "usd",
-            paymentMethodId: paymentMethodId, 
-          }),
-        }
-      );
+      const response = await fetch("https://stripe-createex.azurewebsites.net/payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: amount , 
+          currency: "usd",
+          paymentMethodId: paymentMethodId,
+        }),
+      });
       const data = await response.json();
       setClientSecret(data.clientSecret);
     } catch (error) {
@@ -41,7 +37,6 @@ export default function App() {
         fetchClientSecret={fetchClientSecret}
         clientSecret={clientSecret}
         amount={amount}
-        setPaymentMethodId={setPaymentMethodId} 
       />
     </Elements>
   );
