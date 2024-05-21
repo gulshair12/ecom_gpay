@@ -9,7 +9,7 @@ const stripePromise = loadStripe(
 );
 
 export default function App() {
-  const { amount } = useParams;
+  const { amount } = useParams(); // Correctly calling useParams()
 
   const [clientSecret, setClientSecret] = useState("");
 
@@ -21,7 +21,7 @@ export default function App() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: amount,
+            amount: amount, // Ensure the amount is passed as a parameter
             currency: "usd",
             paymentMethodId: paymentMethodId,
           }),
