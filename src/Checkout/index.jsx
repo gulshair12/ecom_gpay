@@ -8,7 +8,7 @@ const stripePromise = loadStripe(
   "pk_test_51PH2dsKvSuAOYrcIrXNxqCVOCHU5NyayZYrvKU7nuIdjr9kMwCp0isRg1Yl0iU7rT61prQXbihPObrWpV2qYuGbi00zoyhtZBf"
 );
 
-const index = () => {
+const Index = () => {
   const { amount } = useParams();
 
   return (
@@ -18,4 +18,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

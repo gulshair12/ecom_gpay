@@ -59,11 +59,18 @@ const Checkout = ({ amount }) => {
           amount: amount,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to complete payment");
       }
 
-      navigate("/success");
+      const result = await response.json();
+
+      if (result.success) {
+        navigate("/success");
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
       console.error("Error confirming payment:", error);
       setPaymentError("An error occurred. Please try again later.");
