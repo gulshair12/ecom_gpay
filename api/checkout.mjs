@@ -1,10 +1,12 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import stripePackage from "stripe";
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+
+export async function handler(event) {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: 'Method Not Allowed' }),
+      body: JSON.stringify({ error: "Method Not Allowed" }),
     };
   }
 
@@ -12,7 +14,9 @@ exports.handler = async (event) => {
     const { paymentMethodId, amount } = JSON.parse(event.body);
 
     // Log received data for debugging
-    console.log(`Received amount: ${amount}, paymentMethodId: ${paymentMethodId}`);
+    console.log(
+      `Received amount: ${amount}, paymentMethodId: ${paymentMethodId}`
+    );
 
     // Create a PaymentIntent with the amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
@@ -35,4 +39,4 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: error.message }),
     };
   }
-};
+}
