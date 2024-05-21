@@ -2,7 +2,7 @@ import stripePackage from 'stripe';
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 
-export async function handler(event) {
+export default async function handler(event) {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -19,9 +19,9 @@ export async function handler(event) {
     // Create a PaymentIntent with the amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
-      currency: "usd",
+      currency: 'usd',
       payment_method: paymentMethodId,
-      confirmation_method: "manual",
+      confirmation_method: 'manual',
       confirm: true, // Immediately confirm the PaymentIntent
     });
 
@@ -30,7 +30,7 @@ export async function handler(event) {
       body: JSON.stringify({ success: true, paymentIntent }),
     };
   } catch (error) {
-    console.error("Error creating payment intent:", error);
+    console.error('Error creating payment intent:', error);
 
     return {
       statusCode: 500,
