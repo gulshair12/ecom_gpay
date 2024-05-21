@@ -9,11 +9,12 @@ const stripePromise = loadStripe(
 );
 
 export default function App() {
-  const { amount } = useParams(); // Correctly calling useParams()
+  const { amount } = useParams(); 
 
   const [clientSecret, setClientSecret] = useState("");
+  const [paymentMethodId, setPaymentMethodId] = useState(""); 
 
-  const fetchClientSecret = async (paymentMethodId) => {
+  const fetchClientSecret = async () => {
     try {
       const response = await fetch(
         "https://stripe-createex.azurewebsites.net/payment-intent",
@@ -21,9 +22,9 @@ export default function App() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: amount, // Ensure the amount is passed as a parameter
+            amount: amount, 
             currency: "usd",
-            paymentMethodId: paymentMethodId,
+            paymentMethodId: paymentMethodId, 
           }),
         }
       );
@@ -40,6 +41,7 @@ export default function App() {
         fetchClientSecret={fetchClientSecret}
         clientSecret={clientSecret}
         amount={amount}
+        setPaymentMethodId={setPaymentMethodId} 
       />
     </Elements>
   );
