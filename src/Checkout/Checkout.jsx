@@ -35,7 +35,7 @@ const Checkout = ({ amount }) => {
         console.log("PaymentMethod:", paymentMethod);
         setPaymentError(null);
 
-        confirmPaymentWithBackend(paymentMethod, total);
+        confirmPaymentWithBackend(paymentMethod, amount);
       }
     } catch (error) {
       console.error(error);
@@ -47,7 +47,7 @@ const Checkout = ({ amount }) => {
     setCardHolderName(event.target.value);
   };
 
-  const confirmPaymentWithBackend = async (paymentMethod, total) => {
+  const confirmPaymentWithBackend = async (paymentMethod, amount) => {
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
@@ -56,7 +56,7 @@ const Checkout = ({ amount }) => {
         },
         body: JSON.stringify({
           paymentMethodId: paymentMethod.id,
-          amount: total,
+          amount: amount,
         }),
       });
       if (!response.ok) {
