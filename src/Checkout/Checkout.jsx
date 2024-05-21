@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 
-const Checkout = () => {
+const Checkout = ({ fetchClientSecret, clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [paymentError, setPaymentError] = useState(null);
   const [cardHolderName, setCardHolderName] = useState("");
+  const [paymentError, setPaymentError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,25 +19,31 @@ const Checkout = () => {
     const cardElement = elements.getElement(CardElement);
 
     try {
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: cardHolderName,
-            },
-          },
-        }
-      );
+      const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+        billing_details: { name: cardHolderName }
+      });
 
-      if (error) {
-        console.error("Stripe confirmCardPayment Error:", error);
-        setPaymentError(error.message);
-      } else {
-        console.log("PaymentIntent:", paymentIntent);
-        setPaymentError(null);
-        navigate("/success");
+      if (paymentMethodError) {
+        setPaymentError(paymentMethodError.message);
+        return;
+      }
+
+      await fetchClientSecret(paymentMethod.id);
+
+      if (clientSecret) {
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: paymentMethod.id,
+        });
+
+        if (error) {
+          setPaymentError(error.message);
+        } else {
+          console.log("PaymentIntent:", paymentIntent);
+          setPaymentError(null);
+          navigate("/success");
+        }
       }
     } catch (error) {
       console.error("Payment error:", error);
