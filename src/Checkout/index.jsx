@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Checkout from "./Checkout";
@@ -10,37 +10,31 @@ const stripePromise = loadStripe(
 
 export default function App() {
   const { amount } = useParams();
-
   const [clientSecret, setClientSecret] = useState("");
 
-  const fetchClientSecret = async (paymentMethodId) => {
-    try {
-      const response = await fetch(
-        "https://stripe-createex.azurewebsites.net/payment-intent",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: amount * 100,
-            currency: "usd",
-            paymentMethodId: paymentMethodId,
-          }),
-        }
-      );
-      const data = await response.json();
-      setClientSecret(data.clientSecret);
-    } catch (error) {
-      console.error("Error fetching client secret:", error);
-    }
+  useEffect(() => {
+    // Fetch the client secret from the backend
+    fetch(`https://stripe-createex.azurewebsites.net/payment-intent`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: amount * 100, currency: "usd" }), // Amount in cents
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret))
+      .catch((error) => console.error("Error fetching client secret:", error));
+  }, [amount]);
+
+  const options = {
+    clientSecret: clientSecret,
   };
 
   return (
-    <Elements stripe={stripePromise}>
-      <Checkout
-        fetchClientSecret={fetchClientSecret}
-        clientSecret={clientSecret}
-        amount={amount}
-      />
-    </Elements>
+    clientSecret && (
+      <Elements stripe={stripePromise} options={options}>
+        <Checkout amount={amount} />
+      </Elements>
+    )
   );
 }
