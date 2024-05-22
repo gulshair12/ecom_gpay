@@ -30,6 +30,11 @@ const Checkout = ({ amount, clientSecret }) => {
         {
           payment_method: {
             card: cardElement,
+            billing_details: {
+              // Optionally include billing details here
+              // name: 'Customer Name',
+              // email: 'customer@example.com'
+            },
           },
         }
       );
