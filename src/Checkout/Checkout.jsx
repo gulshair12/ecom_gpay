@@ -1,79 +1,65 @@
 import React, { useState } from "react";
-import {
-  useStripe,
-  useElements,
-  CardNumberElement,
-  CardCvcElement,
-  CardExpiryElement,
-} from "@stripe/react-stripe-js";
-import { useNavigate } from "react-router-dom";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const Checkout = ({ amount }) => {
+const Checkout = ({ amount, clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setProcessing(true);
 
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
+    if (!elements || !stripe) {
+      setErrorMessage("Stripe has not loaded correctly.");
       return;
     }
 
-    const cardElement = elements.getElement(CardNumberElement);
+    const cardElement = elements.getElement(CardElement);
 
-    const { error: paymentError, paymentIntent } =
-      await stripe.confirmCardPayment("{{CLIENT_SECRET}}", {
+    if (!cardElement) {
+      setErrorMessage("Card element not found");
+      return;
+    }
+
+    try {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
+          billing_details: {
+            // Optionally, include billing details
+            name: 'Customer Name',
+            email: 'customer@example.com'
+          },
         },
       });
 
-    if (paymentError) {
-      setError(`Payment failed: ${paymentError.message}`);
-      setProcessing(false);
-    } else {
-      setSucceeded(true);
-      setProcessing(false);
-      setError(null);
-      navigate("/success");
+      if (error) {
+        setErrorMessage(`Payment failed: ${error.message}`);
+      } else if (paymentIntent.status === "succeeded") {
+        // Payment succeeded, redirect or show success message
+        window.location.href = `https://ecom-gpay.vercel.app/success`;
+      } else {
+        setErrorMessage(`Unexpected payment status: ${paymentIntent.status}`);
+      }
+    } catch (error) {
+      setErrorMessage(`Payment processing error: ${error.message}`);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-md w-full p-4 bg-white rounded shadow"
-      >
+      <form onSubmit={handleSubmit} className="max-w-md w-full p-4 bg-white rounded shadow">
         <h2 className="text-xl font-semibold mb-4">Payment method</h2>
 
         <div className="mb-4">
-          <label className="block mb-2">Card Number</label>
-          <CardNumberElement className="w-full p-2 border rounded" />
+          <label className="block mb-2">Card Details</label>
+          <CardElement className="w-full p-2 border rounded" />
         </div>
-        <div className="mb-4">
-          <label className="block mb-2">CVC Number</label>
-          <CardCvcElement className="w-full p-2 border rounded" />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Expiry Date</label>
-          <CardExpiryElement className="w-full p-2 border rounded" />
-        </div>
-        {error && <div className="text-red-500 mb-4">{error}</div>}
-
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
-          disabled={!stripe || processing || succeeded}
-        >
-          {processing ? "Processing..." : `Pay $${amount}`}
+        <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700" disabled={!stripe || !elements}>
+          Pay ${amount}
         </button>
+        {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
       </form>
     </div>
   );
