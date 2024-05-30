@@ -4,6 +4,8 @@ import LandingPage from "./LandingPage/LandingPage";
 import Welcome from "./Welcome/Welcome";
 import Checkout from "./Checkout/index";
 import SuccesPage from "./Success/SuccesPage";
+import Wallet from "./Wallet/Index";
+import "./app.css";
 
 function App() {
   const router = createBrowserRouter([
@@ -15,6 +17,11 @@ function App() {
       path: "/welcomePage",
       element: <Welcome />,
     },
+    {
+      path: "/wallet",
+      element: <Wallet />,
+    },
+
     {
       path: "/checkout/:amount",
       element: <Checkout />,

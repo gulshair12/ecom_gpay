@@ -1,48 +1,42 @@
 import { Link } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+// import { GoogleLogin } from "@react-oauth/google";
+// import { jwtDecode } from "jwt-decode";
+// import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleLoginSuccess = (credentialResponse) => {
-    const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
-    console.log(credentialResponseDecoded);
+  // const handleLoginSuccess = (credentialResponse) => {
+  //   const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
+  //   console.log(credentialResponseDecoded);
 
-    localStorage.setItem("userdata", JSON.stringify(credentialResponseDecoded));
-    navigate("/welcomePage");
-  };
+  //   localStorage.setItem("userdata", JSON.stringify(credentialResponseDecoded));
+  //   navigate("/welcomePage");
+  // };
 
-  const handleLoginError = () => {
-    console.log("Login Failed");
-  };
+  // const handleLoginError = () => {
+  //   console.log("Login Failed");
+  // };
   return (
     <>
-      <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
-        <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
-          <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-            <div className="mt-12 flex flex-col items-center justify-center">
-              <div className="w-full flex-1 mt-8">
-                <div className="flex  items-center justify-center  h-[10vh] lg:h-[60vh]">
-                  <Link to="/welcomePage">
-                    <GoogleLogin
-                      onSuccess={handleLoginSuccess}
-                      onError={handleLoginError}
-                    />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
-            <div
-              className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-              style={{
-                backgroundImage:
-                  'url("https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg")',
-              }}
-            ></div>
+      <div className="flex items-center justify-center min-h-screen bg-[#262F49]">
+        <div className="text-center">
+          <img
+            src="/Frame 7.png"
+            alt="Illustration"
+            className="mx-auto mb-8 w-1/2"
+          />
+          <div className="flex justify-center">
+            <Link to="/welcomePage">
+              <button className="flex items-center justify-center px-4 py-2 bg-white text-black rounded-full shadow-md hover:shadow-lg">
+                <img
+                  src="/icon_google.svg"
+                  alt="Google Logo"
+                  className="w-6 h-6 mr-2"
+                />
+                Sign in with Google
+              </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,22 +1,24 @@
 import React from "react";
-import Wallet from "../Wallet/Wallet";
+import { Link } from "react-router-dom";
 
-const Header = ({ userData }) => {
-  console.log(userData);
+const Header = () => {
   return (
-    <nav className="bg-gray-700 p-2 lg:p-2 rounded-sm text-white">
-      <div className="flex justify-between mx-2 lg:mx-10">
-        <h1 className="text-lg md:text-2xl"> {userData.name}</h1>
-        <div className="flex space-x-4">
-          <Wallet />
-          <img
-            src={userData.picture}
-            alt="userimg"
-            className="w-10 rounded-3xl"
-          />
-        </div>
+    <header className="flex justify-between items-center p-4 bg-gray-800 text-white sm:px-32 ">
+      <div className="flex items-center mb-4 sm:mb-0">
+        <img src="headerIcon.svg" alt="Logo" className="h-10" />
       </div>
-    </nav>
+      <div className="flex items-center">
+        <div className="flex bg-yellow-500 rounded-full  mr-4">
+          <Link to ="/wallet">
+            <button className="text-white font-semibold py-2 px-4 md:px-8 rounded-full  text-nowrap">
+              Buy Token
+            </button>
+          </Link>
+          <div className="bg-white text-black py-2 px-4 rounded-full">0</div>
+        </div>
+        <img src="/profile.png" alt="User" className="h-10 w-10 rounded-full" />
+      </div>
+    </header>
   );
 };
 
