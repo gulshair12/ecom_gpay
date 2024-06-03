@@ -5,11 +5,13 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center p-4 bg-gray-800 text-white sm:px-32 ">
       <div className="flex items-center mb-4 sm:mb-0">
-        <img src="headerIcon.svg" alt="Logo" className="h-10" />
+        <Link to="/welcomePage">
+          <img src="headerIcon.svg" alt="Logo" className="h-10" />
+        </Link>
       </div>
       <div className="flex items-center">
         <div className="flex bg-yellow-500 rounded-full  mr-4">
-          <Link to ="/wallet">
+          <Link to="/wallet">
             <button className="text-white font-semibold py-2 px-4 md:px-8 rounded-full  text-nowrap">
               Buy Token
             </button>
